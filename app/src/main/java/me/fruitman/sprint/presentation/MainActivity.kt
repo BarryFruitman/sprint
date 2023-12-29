@@ -78,44 +78,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class OnDragTaskListener : OnDragListener {
-
         override fun onDrag(view: View?, dragEvent: DragEvent?): Boolean {
-            when (dragEvent?.action) {
-                ACTION_DRAG_ENTERED -> {
-                    view?.foregroundTintList = ColorStateList.valueOf(Color.RED)
-                    view?.invalidate()
-//                    view?.setBackgroundColor(Color.LTGRAY)
-                }
-                ACTION_DRAG_EXITED -> {
-//                    view?.setBackgroundColor(Color.WHITE)
-                    view?.foregroundTintList = null
-                    view?.invalidate()
-                }
-                ACTION_DROP -> {
-                    view?.foregroundTintList = null
-                    view?.invalidate()
-
-                    var iTab = 0
-                    if (view == binding.toolbar.getChildAt(1)) {
-                        iTab = binding.tabs.tabCount
-                    } else {
-                        for (n in 0 until binding.tabs.tabCount) {
-                            if (binding.tabs.getTabAt(n)?.view == view) {
-                                iTab = n
-                                break
-                            }
+            if (dragEvent?.action == ACTION_DROP) {
+                var iTab = 0
+                if (view == binding.toolbar.getChildAt(1)) {
+                    iTab = binding.tabs.tabCount
+                } else {
+                    for (n in 0 until binding.tabs.tabCount) {
+                        if (binding.tabs.getTabAt(n)?.view == view) {
+                            iTab = n
+                            break
                         }
                     }
-
-                    val stage = sectionsPagerAdapter.tabStages.getOrNull(iTab) ?: Stage.Done
-                    viewModel.onDragToNewColumn(dragEvent.clipData.getItemAt(0).text.toString().toInt(), stage)
-//                    view?.cancelDragAndDrop()
-//                    view?.setBackgroundColor(Color.WHITE)
                 }
+
+                val stage = sectionsPagerAdapter.tabStages.getOrNull(iTab) ?: Stage.Done
+                viewModel.onDragToNewColumn(
+                    dragEvent.clipData.getItemAt(0).text.toString().toInt(),
+                    stage
+                )
             }
 
             return true
         }
-
     }
 }
