@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Sprint</string>
+
+    <string name="backlog">Backlog</string>
+    <string name="this_week">This Week</string>
+    <string name="today">Today</string>
+    <string name="waiting_on">Waiting On</string>
+    <string name="done">Done</string>
+
+    <string name="tab_text_to_do">@string/this_week</string>
+    <string name="tab_text_in_progress">@string/today</string>
+    <string name="tab_text_follow_up">@string/waiting_on</string>
+    <string name="tab_text_done">@string/done</string>
+
+    <string name="add_task">Add Task</string>
+    <string name="title">Title</string>
+    <string name="steps">Task Steps</string>
+    <string name="stage">Task Stage</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="drag_reorder">Drag to reorder</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="new_step">+ New Step</string>
+</resources>

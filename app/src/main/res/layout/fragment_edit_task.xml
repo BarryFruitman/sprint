@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/titleLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"
+                android:text="@string/title"
+                android:textSize="12sp"/>
+
+            <EditText
+                android:id="@+id/titleEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/background"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:text="@={model.title}"
+                android:textSize="30sp"
+                android:textColor="@color/foreground"
+                tools:ignore="LabelFor"
+                tools:text="Task 4" />
+
+            <TextView
+                android:id="@+id/nextActionLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/steps"
+                android:textSize="12sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/actionList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:nestedScrollingEnabled="false"
+                tools:itemCount="5"
+                tools:listitem="@layout/action_list_item" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="15dp"
+                android:onClick="@{() -> model.appendNewAction()}"
+                android:padding="0dp"
+                android:textSize="20sp"
+                android:text="@string/new_step" />
+
+            <TextView
+                android:id="@+id/columnLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="15dp"
+                android:text="@string/stage"
+                android:textSize="12sp" />
+
+            <RadioGroup
+                android:id="@+id/stage_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:orientation="vertical">
+                <RadioButton
+                    android:id="@+id/radioBacklog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/backlog" />
+                <RadioButton
+                    android:id="@+id/radioTodo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/this_week"
+                    tools:checked="true"/>
+                <RadioButton
+                    android:id="@+id/radioInProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/today"/>
+                <RadioButton
+                    android:id="@+id/radioFollowUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/waiting_on"/>
+                <RadioButton
+                    android:id="@+id/radioDone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/done"/>
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/saveCTA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:onClick="@{() -> model.onClickSave()}"
+                android:text="@string/save"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/deleteCTA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#ff0000"
+                android:onClick="@{() -> model.onClickDelete()}"
+                app:visibleIf="@{model.showDeleteCTA}"
+                android:text="@string/delete"
+                android:textSize="15sp"
+                tools:visibility="visible" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+    <data>
+        <variable
+            name="model"
+            type="me.fruitman.sprint.presentation.EditTaskViewModel" />
+
+    </data>
+
+</layout>
