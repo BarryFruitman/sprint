@@ -96,6 +96,10 @@ class EditTaskFragment : Fragment() {
         viewModel.onViewReady()
     }
 
+    fun onClickSave() = viewModel.onClickSave()
+
+    fun onClickDelete() = viewModel.onClickDelete()
+
     private inner class ActionAdapter : RecyclerView.Adapter<ActionViewHolder>() {
         var actions: List<EditTaskViewModel.ActionItem> = emptyList()
 

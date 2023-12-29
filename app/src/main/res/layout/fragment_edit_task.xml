@@ -109,28 +109,6 @@
 
             </RadioGroup>
 
-            <Button
-                android:id="@+id/saveCTA"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:onClick="@{() -> model.onClickSave()}"
-                android:text="@string/save"
-                android:textSize="15sp" />
-
-            <Button
-                android:id="@+id/deleteCTA"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginBottom="12dp"
-                android:backgroundTint="#ff0000"
-                android:onClick="@{() -> model.onClickDelete()}"
-                app:visibleIf="@{model.showDeleteCTA}"
-                android:text="@string/delete"
-                android:textSize="15sp"
-                tools:visibility="visible" />
-
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>

@@ -20,9 +20,6 @@ import me.fruitman.sprint.databinding.TaskListItemBinding
 import me.fruitman.sprint.util.ArgumentsViewModelProviderFactory
 import java.util.Collections
 
-/**
- * A placeholder fragment containing a simple view.
- */
 class TaskListFragment : Fragment() {
 
     private val viewModel: TaskListViewModel by viewModels { ArgumentsViewModelProviderFactory(arguments) }
