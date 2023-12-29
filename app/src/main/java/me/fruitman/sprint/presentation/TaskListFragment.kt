@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -141,6 +140,8 @@ class TaskListFragment : Fragment() {
         }
 
         inner class ItemMoveCallback : ItemTouchHelper.Callback() {
+            private var prevActionState: Int = ItemTouchHelper.ACTION_STATE_IDLE
+
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
                 val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
                 return makeMovementFlags(dragFlags, 0)
@@ -153,7 +154,10 @@ class TaskListFragment : Fragment() {
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
-                viewModel.onListOrderChanged()
+                if (actionState == ItemTouchHelper.ACTION_STATE_IDLE && prevActionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewModel.onListOrderChanged(taskList)
+                }
+                prevActionState = actionState
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit

@@ -1,6 +1,7 @@
 package me.fruitman.sprint.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +17,6 @@ class TaskListViewModel(arguments: Bundle) : ViewModel() {
     private val caseToGetTaskList = CaseToGetTaskList()
     private val caseNavigateToEditTask = CaseNavigateToEditTask()
     private val caseToReorderStageTaskList = CaseToReorderStageTaskList()
-    @Suppress("DEPRECATION")
     private val stage: Stage = Stage.fromName(arguments.getString("stage_name")) ?: Stage.ThisWeek // ERROR
     val tasks = MutableLiveData<List<TaskItemModel>>(emptyList())
 
@@ -30,9 +30,9 @@ class TaskListViewModel(arguments: Bundle) : ViewModel() {
         }
     }
 
-    fun onListOrderChanged() {
+    fun onListOrderChanged(taskList: List<TaskItemModel>) {
         viewModelScope.launch {
-            caseToReorderStageTaskList.update(tasks.value!!.map { it.task })
+            caseToReorderStageTaskList.update(taskList.map { it.task })
         }
     }
 
