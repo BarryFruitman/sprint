@@ -1,19 +1,14 @@
 package me.fruitman.sprint.presentation
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.DragEvent
-import android.view.DragEvent.ACTION_DRAG_ENTERED
-import android.view.DragEvent.ACTION_DRAG_EXITED
 import android.view.DragEvent.ACTION_DROP
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnDragListener
-import android.view.Window
 import androidx.activity.viewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -39,11 +34,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-            startActivity(
-                Intent(this@MainActivity, DoneListActivity::class.java).apply {
-                    putExtra("taskId", 0)
+            when (menuItem.itemId) {
+                R.id.action_done -> {
+                    startActivity(
+                        Intent(this@MainActivity, DoneListActivity::class.java)
+                    )
                 }
-            )
+            }
 
             return true
         }
@@ -67,12 +64,19 @@ class MainActivity : AppCompatActivity() {
         binding.tabs.getTabAt(1)?.view?.setOnDragListener(onDragListener)
         binding.tabs.getTabAt(2)?.view?.setOnDragListener(onDragListener)
 
-        val fab: FloatingActionButton = binding.fab
-        fab.setOnClickListener {
+        val newTaskButton: FloatingActionButton = binding.fabNewTask
+        newTaskButton.setOnClickListener {
             startActivity(
                 Intent(this, EditTaskActivity::class.java).apply {
                     putExtra("taskId", 0)
                 }
+            )
+        }
+
+        val backlogButton: FloatingActionButton = binding.fabBacklog
+        backlogButton.setOnClickListener {
+            startActivity(
+                Intent(this, BacklogActivity::class.java)
             )
         }
     }
