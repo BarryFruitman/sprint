@@ -21,7 +21,6 @@ class EditTaskViewModel(private val arguments: Bundle) : ViewModel() {
     val open = MutableLiveData(true)
     val title = MutableLiveData<String>()
     val selectedStage = MutableLiveData(Stage.ThisWeek.name)
-    val showDeleteCTA = MutableLiveData(true)
     val actions = MutableLiveData<List<ActionItem>>()
 
     private val caseToViewTask = CaseToViewTask()
@@ -66,9 +65,9 @@ class EditTaskViewModel(private val arguments: Bundle) : ViewModel() {
             id = taskId,
             title = "",
             actions = emptyList(),
-            stage = Stage.ThisWeek,
+            stage = Stage.Backlog,
             position = 0
-        ).also { showDeleteCTA.value = false }
+        )
     }
 
     private fun Action.toViewEntity() = ActionItem(nextId++, description, done)
