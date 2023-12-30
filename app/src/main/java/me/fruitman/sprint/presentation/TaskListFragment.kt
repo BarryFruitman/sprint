@@ -10,20 +10,21 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import me.fruitman.sprint.databinding.FragmentTaskListBinding
 import me.fruitman.sprint.databinding.TaskListItemBinding
-import me.fruitman.sprint.util.ArgumentsViewModelProviderFactory
 import java.util.Collections
 
 class TaskListFragment : Fragment() {
-
-    private val viewModel: TaskListViewModel by viewModels { ArgumentsViewModelProviderFactory(arguments) }
     private var binding: FragmentTaskListBinding? = null
     private lateinit var taskListAdapter: TaskListAdapter
+    private lateinit var viewModel: TaskListViewModel
 
     class TaskItemViewHolder(val binding: TaskListItemBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -37,18 +38,52 @@ class TaskListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            taskListAdapter = TaskListAdapter()
 
-            binding?.taskList?.apply {
-                layoutManager = LinearLayoutManager(requireContext()).apply {
-                    orientation = LinearLayoutManager.VERTICAL
+        val stageName = arguments?.getString("stage_name") ?: ""
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactory {
+                initializer {
+                    TaskListViewModel(arguments ?: Bundle.EMPTY)
                 }
-                adapter = taskListAdapter
-            }
+            })[stageName, TaskListViewModel::class.java]
 
-            viewModel.tasks.observe(viewLifecycleOwner) { newTaskList ->
-                taskListAdapter.onNewTaskList(newTaskList)
+        taskListAdapter = TaskListAdapter()
+
+        binding?.taskList?.apply {
+            layoutManager = LinearLayoutManager(requireContext()).apply {
+                orientation = LinearLayoutManager.VERTICAL
             }
+            adapter = taskListAdapter
+        }
+
+        binding?.buttonNewTask?.setOnClickListener {
+            startActivity(
+                Intent(requireContext(), EditTaskActivity::class.java).apply {
+                    putExtra("taskId", 0)
+                }
+            )
+        }
+
+        viewModel.tasks.observe(viewLifecycleOwner) { newTaskList ->
+            taskListAdapter.onNewTaskList(newTaskList)
+        }
+
+        viewModel.title.observe(viewLifecycleOwner) { title ->
+            if (title != null) {
+                binding?.toolbar?.title = title
+            } else {
+                binding?.toolbar?.visibility = View.GONE
+            }
+        }
+
+        viewModel.showNewTaskButton.observe(viewLifecycleOwner) { shouldShowNewTaskButton ->
+            if (shouldShowNewTaskButton) {
+                binding?.buttonNewTask?.show()
+            } else {
+                binding?.buttonNewTask?.hide()
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -84,7 +119,7 @@ class TaskListFragment : Fragment() {
                     // Navigation hack
                     startActivity(
                         Intent(activity, EditTaskActivity::class.java).apply {
-                            putExtra("taskId", viewModel.tasks.value?.get(position)?.task?.id)
+                            putExtra("taskId", taskList[position].task.id)
                         }
                     )
                 }

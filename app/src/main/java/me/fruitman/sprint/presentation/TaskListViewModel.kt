@@ -1,10 +1,13 @@
 package me.fruitman.sprint.presentation
 
 import android.os.Bundle
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.fruitman.sprint.domain.entities.Stage
 import me.fruitman.sprint.domain.entities.Task
@@ -18,17 +21,16 @@ class TaskListViewModel(arguments: Bundle) : ViewModel() {
     private val caseNavigateToEditTask = CaseNavigateToEditTask()
     private val caseToReorderStageTaskList = CaseToReorderStageTaskList()
     private val stage: Stage = Stage.fromName(arguments.getString("stage_name")) ?: Stage.ThisWeek // ERROR
-    val tasks = MutableLiveData<List<TaskItemModel>>(emptyList())
-
-    init {
-        viewModelScope.launch {
-            caseToGetTaskList.getTasksForColumn(stage).collect { tasks ->
-                this@TaskListViewModel.tasks.value = tasks.map { task ->
-                    TaskItemModel(task)
-                }
+    private val _title = setOf(Stage.Backlog, Stage.Done).find { it == stage }?.title
+    val title = MutableLiveData<String?>(_title)
+    private val _showNewTaskButton = setOf(Stage.Backlog, Stage.ThisWeek, Stage.Today).contains(stage)
+    val showNewTaskButton = MutableLiveData(_showNewTaskButton)
+    val tasks: LiveData<List<TaskItemModel>>
+        get() = caseToGetTaskList.getTasksForColumn(stage).map { tasks ->
+            tasks.map { task ->
+                TaskItemModel(task)
             }
-        }
-    }
+        }.asLiveData(viewModelScope.coroutineContext)
 
     fun onListOrderChanged(taskList: List<TaskItemModel>) {
         viewModelScope.launch {
@@ -41,6 +43,7 @@ class TaskListViewModel(arguments: Bundle) : ViewModel() {
     }
 
     inner class TaskItemModel(val task: Task) {
+        // TODO: Don't wrap a Task
         fun onClick() {
             this@TaskListViewModel.onClick(this)
         }

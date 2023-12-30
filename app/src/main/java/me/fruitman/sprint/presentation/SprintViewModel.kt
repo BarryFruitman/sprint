@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import me.fruitman.sprint.domain.entities.Stage
 import me.fruitman.sprint.domain.use_case.CaseToMoveTaskToColumn
 
-class MainTabViewModel : ViewModel() {
+class SprintViewModel : ViewModel() {
 
     private val caseToMoveTaskToColumn = CaseToMoveTaskToColumn()
 

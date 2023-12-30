@@ -1,45 +1,31 @@
 package me.fruitman.sprint.presentation
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.DragEvent
-import android.view.DragEvent.ACTION_DROP
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import android.view.View.OnDragListener
 import androidx.activity.viewModels
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
+import androidx.fragment.app.commit
 import me.fruitman.sprint.R
 import me.fruitman.sprint.databinding.ActivityMainBinding
+import me.fruitman.sprint.databinding.LayoutBottomNavigationBinding
 import me.fruitman.sprint.domain.entities.Stage
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainTabViewModel by viewModels()
-    private val onDragListener = OnDragTaskListener()
-    private lateinit var binding: ActivityMainBinding
-    val sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+    private val viewModel: MainViewModel by viewModels()
 
-    private val menuProvider = object : MenuProvider {
-        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.task_list, menu)
+    lateinit var binding: ActivityMainBinding
 
-            binding.toolbar.getChildAt(1).setOnDragListener(onDragListener)
-        }
-
-        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-            when (menuItem.itemId) {
-                R.id.action_done -> {
-                    startActivity(
-                        Intent(this@MainActivity, DoneListActivity::class.java)
-                    )
-                }
+    inner class OnDragTaskListener(val stageName: String) : View.OnDragListener {
+        override fun onDrag(view: View?, dragEvent: DragEvent?): Boolean {
+            if (dragEvent?.action == DragEvent.ACTION_DROP) {
+                Log.d("DRAG_DROP_DEBUG", "Dropped on $stageName")
+                viewModel.onDragToNewColumn(
+                    dragEvent.clipData.getItemAt(0).text.toString().toInt(),
+                    Stage.fromName(stageName) ?: return true
+                )
             }
 
             return true
@@ -49,61 +35,49 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d("DRAG_DROP_DEBUG", "testing 1 2 3")
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        addMenuProvider(menuProvider)
-        setSupportActionBar(binding.toolbar)
+        val sprintFragment = SprintFragment()
+        val backlogFragment = TaskListFragment().apply {
+            arguments = Bundle().apply {
+                putString("stage_name", Stage.Backlog.name) } }
+        val doneFragment = TaskListFragment().apply {
+            arguments = Bundle().apply {
+                putString("stage_name", Stage.Done.name) } }
 
-        val viewPager: ViewPager = binding.viewPager
-        viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = binding.tabs
-        tabs.setupWithViewPager(viewPager)
-
-        binding.tabs.getTabAt(0)?.view?.setOnDragListener(onDragListener)
-        binding.tabs.getTabAt(1)?.view?.setOnDragListener(onDragListener)
-        binding.tabs.getTabAt(2)?.view?.setOnDragListener(onDragListener)
-
-        val newTaskButton: FloatingActionButton = binding.fabNewTask
-        newTaskButton.setOnClickListener {
-            startActivity(
-                Intent(this, EditTaskActivity::class.java).apply {
-                    putExtra("taskId", 0)
+        val buttonBinding: LayoutBottomNavigationBinding = binding.bottomNavigation
+        buttonBinding.bottomNavBacklog.apply {
+            setOnDragListener(OnDragTaskListener(Stage.Backlog.name))
+            setOnClickListener {
+                supportFragmentManager.commit {
+                    replace(R.id.main_content, backlogFragment)
                 }
-            )
-        }
-
-        val backlogButton: FloatingActionButton = binding.fabBacklog
-        backlogButton.setOnClickListener {
-            startActivity(
-                Intent(this, BacklogActivity::class.java)
-            )
-        }
-    }
-
-    inner class OnDragTaskListener : OnDragListener {
-        override fun onDrag(view: View?, dragEvent: DragEvent?): Boolean {
-            if (dragEvent?.action == ACTION_DROP) {
-                var iTab = 0
-                if (view == binding.toolbar.getChildAt(1)) {
-                    iTab = binding.tabs.tabCount
-                } else {
-                    for (n in 0 until binding.tabs.tabCount) {
-                        if (binding.tabs.getTabAt(n)?.view == view) {
-                            iTab = n
-                            break
-                        }
-                    }
-                }
-
-                val stage = sectionsPagerAdapter.tabStages.getOrNull(iTab) ?: Stage.Done
-                viewModel.onDragToNewColumn(
-                    dragEvent.clipData.getItemAt(0).text.toString().toInt(),
-                    stage
-                )
             }
+        }
 
-            return true
+        buttonBinding.bottomNavSprint.apply {
+            setOnDragListener(OnDragTaskListener(Stage.ThisWeek.name))
+            setOnClickListener {
+                supportFragmentManager.commit {
+                    replace(R.id.main_content, sprintFragment)
+                }
+            }
+        }
+
+        buttonBinding.bottomNavDone.apply {
+            setOnDragListener(OnDragTaskListener(Stage.Done.name))
+            setOnClickListener {
+                supportFragmentManager.commit {
+                    replace(R.id.main_content, doneFragment)
+                }
+            }
+        }
+
+        supportFragmentManager.commit {
+            replace(R.id.main_content, sprintFragment)
         }
     }
 }

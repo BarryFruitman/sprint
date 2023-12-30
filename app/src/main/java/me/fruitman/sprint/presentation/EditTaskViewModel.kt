@@ -1,6 +1,7 @@
 package me.fruitman.sprint.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -78,6 +79,8 @@ class EditTaskViewModel(private val arguments: Bundle) : ViewModel() {
 
     private fun bindTask(task: Task) {
         this.task = task
+
+        Log.d("EDIT_DEBUG", "title: ${task.title}")
 
         title.value = task.title
         actions.value = task.actions.map { it.toViewEntity() }

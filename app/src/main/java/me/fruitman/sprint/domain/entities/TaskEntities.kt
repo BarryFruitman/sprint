@@ -13,7 +13,7 @@ enum class Stage(val title: String) {
     ThisWeek("This Week"),
     Today("Today"),
     WaitingOn("Waiting On"),
-    Done("Done");
+    Done("Accomplished");
 
     companion object {
         fun fromName(name: String?): Stage? = name?.let { values().firstOrNull { it.name == name } }

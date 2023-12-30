@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/backlog"
+        android:title="@string/backlog"
+        android:icon="@drawable/ic_backlog" />
+    <item android:id="@+id/sprint"
+        android:title="@string/app_name"
+        android:icon="@drawable/ic_sprint" />
+    <item android:id="@+id/done"
+        android:title="@string/done"
+        android:icon="@drawable/ic_done" />
+</menu>
