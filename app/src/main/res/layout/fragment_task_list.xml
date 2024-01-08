@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:background="#2196F3"
         app:titleTextColor="#ffffff"
+        app:subtitleTextColor="#ffffff"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

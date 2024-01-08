@@ -5,7 +5,7 @@
     <string name="this_week">This Week</string>
     <string name="today">Today</string>
     <string name="waiting_on">Waiting On</string>
-    <string name="done">Accomplished</string>
+    <string name="done">Done</string>
 
     <string name="tab_text_to_do">@string/this_week</string>
     <string name="tab_text_in_progress">@string/today</string>

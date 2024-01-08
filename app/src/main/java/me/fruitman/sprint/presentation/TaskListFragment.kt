@@ -77,6 +77,10 @@ class TaskListFragment : Fragment() {
             }
         }
 
+        viewModel.subtitle.observe(viewLifecycleOwner) { subtitle ->
+            binding?.toolbar?.subtitle = subtitle
+        }
+
         viewModel.showNewTaskButton.observe(viewLifecycleOwner) { shouldShowNewTaskButton ->
             if (shouldShowNewTaskButton) {
                 binding?.buttonNewTask?.show()

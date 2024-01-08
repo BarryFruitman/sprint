@@ -23,6 +23,12 @@ class TaskListViewModel(arguments: Bundle) : ViewModel() {
     private val stage: Stage = Stage.fromName(arguments.getString("stage_name")) ?: Stage.ThisWeek // ERROR
     private val _title = setOf(Stage.Backlog, Stage.Done).find { it == stage }?.title
     val title = MutableLiveData<String?>(_title)
+    private val _subtitle = when (stage) {
+        Stage.Backlog -> "Everything I Want To Do"
+        Stage.Done -> "All I've Accomplished"
+        else -> null
+    }
+    val subtitle = MutableLiveData<String?>(_subtitle)
     private val _showNewTaskButton = setOf(Stage.Backlog, Stage.ThisWeek, Stage.Today).contains(stage)
     val showNewTaskButton = MutableLiveData(_showNewTaskButton)
     val tasks: LiveData<List<TaskItemModel>>
