@@ -37,7 +37,7 @@ class EditTaskViewModel(private val arguments: Bundle) : ViewModel() {
                     title = title.value!!,
                     actions = actions.value?.toActions() ?: emptyList(),
                     stage = Stage.fromName(selectedStage.value)!!,
-                    position = 0
+                    position = task.position
                 )
             )
 

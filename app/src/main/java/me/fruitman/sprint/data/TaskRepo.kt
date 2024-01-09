@@ -55,7 +55,7 @@ object TaskRepo {
             id = id,
             title = title,
             stageName = stage.name,
-            position = 0
+            position = position
         )
 
     suspend fun saveTask(task: Task) {
