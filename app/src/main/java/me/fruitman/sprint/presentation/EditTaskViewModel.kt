@@ -104,19 +104,15 @@ class EditTaskViewModel(private val arguments: Bundle) : ViewModel() {
         actions.value = newActions
     }
 
-    // Move it down to the next done action
-    private fun markActionDone(actionsIn: MutableList<ActionItem>, newAction: ActionItem) {
-        val appendId =
-            (actionsIn.indexOfFirst { it.done && it.id != newAction.id }.nullIfNeg() ?: actionsIn.size)
-                .let { index -> actionsIn[index - 1].id }
-        val newActionPos = actionsIn.indexOfFirst { it.id == newAction.id }
+    // Move it to the bottom
+    private fun markActionDone(actionsIn: MutableList<ActionItem>, doneAction: ActionItem) {
+        val appendId = actionsIn[actionsIn.size - 1].id
+        val newActionPos = actionsIn.indexOfFirst { it.id == doneAction.id }
 
         actionsIn.removeAt(newActionPos)
         val appendPos = actionsIn.indexOfFirst { it.id == appendId }
-        actionsIn.add(appendPos + 1, newAction)
+        actionsIn.add(appendPos + 1, doneAction)
     }
-
-    private fun Int.nullIfNeg(): Int? = this.takeIf { this >= 0 }
 
     fun onStageChanged(stageName: String) {
         this.selectedStage.value = stageName
